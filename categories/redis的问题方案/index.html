@@ -32,14 +32,14 @@
   </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/images/logo.svg" alt="GaryHome" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub仓库" href="https://github.com/GaryByd/Gary.github.io"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/categories/">分类</a></li><li class="is-active"><a href="#" aria-current="page">redis的问题方案</a></li></ul></nav></div></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-05-18T05:01:07.000Z" title="5/18/2025, 1:01:07 PM">2025-05-18</time>发表</span><span class="level-item"><time dateTime="2025-05-18T05:26:36.790Z" title="5/18/2025, 1:26:36 PM">2025-05-18</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/redis%E7%9A%84%E9%97%AE%E9%A2%98%E6%96%B9%E6%A1%88/">redis的问题方案</a></span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/posts/redis%E6%8C%81%E4%B9%85%E5%8C%96/">redis持久化和数据淘汰方案</a></p><div class="content"><h1><span id="redis持久化方案">Redis持久化方案</span></h1>
 <h2><span id="rdb">RDB</span></h2>
 <p>RDB全称Redis Database Backup file（Redis数据备份文件），也被叫做Redis数据快照。简单来说就是把内存中的所有数据都记录到磁盘中。当Redis实例故障重启后，从磁盘读取快照文件，恢复数据</p>
-
+<img src="/posts/redis%E6%8C%81%E4%B9%85%E5%8C%96/image-20250518130322881.png" class title="image-20250518130322881">
 <p>Redis内部有触发RDB的机制，可以在redis.conf文件中找到，格式如下：</p>
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># 900秒内，如果至少有1个key被修改，则执行bgsave </span><br>save 900 1  <br>save 300 10  <br>save 60 10000 <br></code></pre></td></tr></table></figure>
 <h3><span id="rdb的执行原理">RDB的执行原理</span></h3>
 <p>bgsave开始时会fork主进程得到子进程，子进程共享主进程的内存数据。完成fork后读取内存数据并写入 RDB 文件。fork采用的是copy-on-write技术：</p>
 <p>当主进程执行读操作时，访问共享内存；</p>
 <p>当主进程执行写操作时，则会拷贝一份数据，执行写操作。</p>
-
+<img src="/posts/redis%E6%8C%81%E4%B9%85%E5%8C%96/image-20250518130416755.png" class title="image-20250518130416755">
 <table>
 <thead>
 <tr>
@@ -69,7 +69,7 @@
 <p><strong>如果直接用save命令会阻塞Redis主线程，性能不太好</strong></p>
 <h2><span id="aof">AOF</span></h2>
 <p>AOF全称为Append Only File（追加文件）。Redis处理的每一个写命令都会记录在AOF文件，可以看做是命令日志文件。</p>
-
+<img src="/posts/redis%E6%8C%81%E4%B9%85%E5%8C%96/image-20250518130555078.png" class title="image-20250518130555078">
 <p>AOF文件会记录指令</p>
 <h3><span id="aof的配置">AOF的配置</span></h3>
 <p>AOF默认是关闭的，需要修改redis.conf配置文件来开启AOF：</p>

@@ -64,7 +64,7 @@
 <li>在并发的情况下，多个事务并行执行，事务不仅要满足原子性，还需要满足隔离性，才能满足一致性。</li>
 <li>事务满足持久化是为了能应对系统崩溃的情况。</li>
 </ul>
-
+<img src="/posts/Mysql%E6%A0%B8%E5%BF%83%E6%A1%86%E6%9E%B6%E7%9F%A5%E8%AF%86/image-20250818220457998.png" class title="image-20250818220457998">
 <p>原子性和隔离性直接保证一致性，简介保证执行结果的正确。而一致性是觉得执行结果正确的直接因素。</p>
 <p>持久性用于应对系统的崩溃，提高数据库的高可用性和鲁棒性。</p>
 <h2><span id="2-并发一致性问题">2. 并发一致性问题</span></h2>
@@ -550,15 +550,15 @@
 <p>脏读和不可重复读最根本的原因是事务读取到其它事务未提交的修改。在事务进行读取操作时，为了解决脏读和不可重复读问题，MVCC 规定只能读取已经提交的快照。当然一个事务可以读取自身未提交的快照，这不算是脏读。因为没有使用 <code>START TRANSACTION</code> 将上面的操作当成一个事务来执行，根据 MySQL 的 AUTOCOMMIT 机制，每个操作都会被当成一个事务来执行，所以上面的操作总共涉及到三个事务。快照中除了记录事务版本号 TRX_ID 和操作之外，还记录了一个 bit 的 DEL 字段，用于标记是否被删除。</p>
 <h3><span id="undo-日志">Undo 日志</span></h3>
 <p>MVCC 的多版本指的是多个版本的快照，快照存储在 Undo 日志中，该日志通过回滚指针 ROLL_PTR 把一个数据行的所有快照连接起来。</p>
-
+<img src="/posts/Mysql%E6%A0%B8%E5%BF%83%E6%A1%86%E6%9E%B6%E7%9F%A5%E8%AF%86/image-20250818233437899.png" class title="image-20250818233437899">
 <p>例如在 MySQL 创建一个表 t，包含主键 id 和一个字段 x。我们先插入一个数据行，然后对该数据行执行两次更新操作。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">INSERT INTO</span> t(id, x) <span class="hljs-keyword">VALUES</span>(<span class="hljs-number">1</span>, &quot;a&quot;);<br><span class="hljs-keyword">UPDATE</span> t <span class="hljs-keyword">SET</span> x<span class="hljs-operator">=</span>&quot;b&quot; <span class="hljs-keyword">WHERE</span> id<span class="hljs-operator">=</span><span class="hljs-number">1</span>;<br><span class="hljs-keyword">UPDATE</span> t <span class="hljs-keyword">SET</span> x<span class="hljs-operator">=</span>&quot;c&quot; <span class="hljs-keyword">WHERE</span> id<span class="hljs-operator">=</span><span class="hljs-number">1</span>;<br></code></pre></td></tr></table></figure>
 <p>因为没有使用 <code>START TRANSACTION</code> 将上面的操作当成一个事务来执行，根据 MySQL 的 AUTOCOMMIT 机制，每个操作都会被当成一个事务来执行，所以上面的操作总共涉及到三个事务。快照中除了记录事务版本号 TRX_ID 和操作之外，还记录了一个 bit 的 DEL 字段，用于标记是否被删除。</p>
-
+<img src="/posts/Mysql%E6%A0%B8%E5%BF%83%E6%A1%86%E6%9E%B6%E7%9F%A5%E8%AF%86/image-20250818232321292.png" class title="image-20250818232321292">
 <p>INSERT、UPDATE、DELETE 操作会创建一个日志，并将事务版本号 TRX_ID 写入。DELETE 可以看成是一个特殊的 UPDATE，还会额外将 DEL 字段设置为 1。</p>
 <h3><span id="readview">ReadView</span></h3>
 <p>MVCC 维护了一个 ReadView 结构，主要包含了当前系统未提交的事务列表 TRX_IDs {TRX_ID_1, TRX_ID_2, …}，还有该列表的最小值 TRX_ID_MIN 和 TRX_ID_MAX。</p>
-
+<img src="/posts/Mysql%E6%A0%B8%E5%BF%83%E6%A1%86%E6%9E%B6%E7%9F%A5%E8%AF%86/image-20250818232339301.png" class title="image-20250818232339301">
 <p>在进行 SELECT 操作时，根据数据行快照的 TRX_ID 与 TRX_ID_MIN 和 TRX_ID_MAX 之间的关系，从而判断数据行快照是否可以使用：</p>
 <ul>
 <li>TRX_ID &lt; TRX_ID_MIN，表示该数据行快照时在当前所有未提交事务之前进行更改的，因此可以使用。</li>
@@ -824,14 +824,14 @@
 </div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-05-18T05:01:07.000Z" title="5/18/2025, 1:01:07 PM">2025-05-18</time>发表</span><span class="level-item"><time dateTime="2025-05-18T05:26:36.790Z" title="5/18/2025, 1:26:36 PM">2025-05-18</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/redis%E7%9A%84%E9%97%AE%E9%A2%98%E6%96%B9%E6%A1%88/">redis的问题方案</a></span></div></div><p class="title is-3 is-size-4-mobile"><a class="link-muted" href="/posts/redis%E6%8C%81%E4%B9%85%E5%8C%96/">redis持久化和数据淘汰方案</a></p><div class="content"><h1><span id="redis持久化方案">Redis持久化方案</span></h1>
 <h2><span id="rdb">RDB</span></h2>
 <p>RDB全称Redis Database Backup file（Redis数据备份文件），也被叫做Redis数据快照。简单来说就是把内存中的所有数据都记录到磁盘中。当Redis实例故障重启后，从磁盘读取快照文件，恢复数据</p>
-
+<img src="/posts/redis%E6%8C%81%E4%B9%85%E5%8C%96/image-20250518130322881.png" class title="image-20250518130322881">
 <p>Redis内部有触发RDB的机制，可以在redis.conf文件中找到，格式如下：</p>
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># 900秒内，如果至少有1个key被修改，则执行bgsave </span><br>save 900 1  <br>save 300 10  <br>save 60 10000 <br></code></pre></td></tr></table></figure>
 <h3><span id="rdb的执行原理">RDB的执行原理</span></h3>
 <p>bgsave开始时会fork主进程得到子进程，子进程共享主进程的内存数据。完成fork后读取内存数据并写入 RDB 文件。fork采用的是copy-on-write技术：</p>
 <p>当主进程执行读操作时，访问共享内存；</p>
 <p>当主进程执行写操作时，则会拷贝一份数据，执行写操作。</p>
-
+<img src="/posts/redis%E6%8C%81%E4%B9%85%E5%8C%96/image-20250518130416755.png" class title="image-20250518130416755">
 <table>
 <thead>
 <tr>
@@ -861,7 +861,7 @@
 <p><strong>如果直接用save命令会阻塞Redis主线程，性能不太好</strong></p>
 <h2><span id="aof">AOF</span></h2>
 <p>AOF全称为Append Only File（追加文件）。Redis处理的每一个写命令都会记录在AOF文件，可以看做是命令日志文件。</p>
-
+<img src="/posts/redis%E6%8C%81%E4%B9%85%E5%8C%96/image-20250518130555078.png" class title="image-20250518130555078">
 <p>AOF文件会记录指令</p>
 <h3><span id="aof的配置">AOF的配置</span></h3>
 <p>AOF默认是关闭的，需要修改redis.conf配置文件来开启AOF：</p>
