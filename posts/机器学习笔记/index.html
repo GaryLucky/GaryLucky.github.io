@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="theme-color" content="#ffffff"><title>机器学习笔记 - GaryHome</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="GaryHome"><meta name="msapplication-TileImage" content="/images/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="GaryHome"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="特征预处理 特征预处理分为标准化和归一化"><meta property="og:type" content="article"><meta property="og:title" content="机器学习笔记"><meta property="og:url" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><meta property="og:site_name" content="GaryHome"><meta property="og:description" content="特征预处理 特征预处理分为标准化和归一化"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104194656835.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104194725724.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104194858340.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104162244244.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104162439098.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104163019077.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104163047059.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104201013608.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104201841529.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104202415777.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104202522095.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183007785.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183020726.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183125661.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230912163031832.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183139728.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183152966.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183222050.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183240178.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183301618.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183315009.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183333299.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183346878.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901162716376.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260105090907748.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260105091344262.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260105091700535.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230904151300483.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230904151334262.png"><meta property="og:image" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230904151343779.png"><meta property="article:published_time" content="2026-01-04T07:58:14.000Z"><meta property="article:modified_time" content="2026-01-06T06:18:29.989Z"><meta property="article:author" content="Gary Byd"><meta property="article:tag" content="机器学习"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104194656835.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"},"headline":"机器学习笔记","image":["https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104194656835.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104194725724.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104194858340.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104162244244.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104162439098.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104163019077.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104163047059.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104201013608.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104201841529.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104202415777.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260104202522095.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183007785.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183020726.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183125661.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230912163031832.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183139728.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183152966.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183222050.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183240178.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183301618.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183315009.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183333299.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901183346878.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230901162716376.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260105090907748.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260105091344262.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20260105091700535.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230904151300483.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230904151334262.png","https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/assets/image-20230904151343779.png"],"datePublished":"2026-01-04T07:58:14.000Z","dateModified":"2026-01-06T06:18:29.989Z","author":{"@type":"Person","name":"Gary Byd"},"publisher":{"@type":"Organization","name":"GaryHome","logo":{"@type":"ImageObject","url":"https://garybyd.github.io/images/logo.svg"}},"description":"特征预处理 特征预处理分为标准化和归一化"}</script><link rel="canonical" href="https://garybyd.github.io/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><link rel="alternate" href="/atom.xml" title="GaryHome" type="application/atom+xml"><link rel="icon" href="/images/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-dark.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/images/logo.svg" alt="GaryHome" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub仓库" href="https://github.com/GaryByd/Gary.github.io"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2026-01-04T07:58:14.000Z" title="1/4/2026, 3:58:14 PM">2026-01-04</time>发表</span><span class="level-item"><time dateTime="2026-01-06T06:18:29.989Z" title="1/6/2026, 2:18:29 PM">2026-01-06</time>更新</span></div></div><h1 class="title is-3 is-size-4-mobile">机器学习笔记</h1><div class="content"><h1><span id="特征预处理">特征预处理</span></h1>
+<p>特征预处理分为标准化和归一化</p>
+<span id="more"></span>
+<h2><span id="为什么进行归一化-标准化">为什么进行归一化、标准化？</span></h2>
+<p>特征的<strong>单位或者大小相差较大，或者某特征的方差相比其他的特征要大出几个数量级</strong>，<strong>容易影响（支配）目标结果</strong>，使得一些模型（算法）无法学习到其它的特征。</p>
+<p><img src="assets/image-20260104194656835.png" alt="image-20260104194656835"></p>
+<h2><span id="归一化">归一化</span></h2>
+<p>通过对原始数据进行变换把数据映射到【mi,mx】(默认为[0,1])之间<br>
+$$<br>
+\begin{cases}<br>
+X’=\frac{x-x_{min}}{x_{max}-x_{min}}\<br>
+X’’=X’*(m_x-m_i)+mi<br>
+\end{cases}<br>
+$$<br>
+<strong>理解:</strong></p>
+<p>X’是为了拿到x_min到x_max的长度占比</p>
+<p>X’'是为了拿到新的区间内长度+上左区间=新的x值</p>
+<p><strong>api:</strong></p>
+<p>数据归一化的API实现</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">sklearn</span>.preprocessing.MinMaxScaler (feature_range=(<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)… )<br></code></pre></td></tr></table></figure>
+<p>feature_range 缩放区间</p>
+<ul>
+<li>调用 fit_transform(X) 将特征进行归一化缩放</li>
+</ul>
+<h2><span id="标准化">标准化</span></h2>
+<p>通过对原始数据进行标准化，转换为均值为0标准差为1的标准正态分布的数据<br>
+$$<br>
+\frac{x-mean}{\sigma}<br>
+$$</p>
+<ul>
+<li>mean 为特征的平均值</li>
+<li>σ 为特征的标准差</li>
+</ul>
+<p>数据标准化的API实现</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">sklearn.preprocessing. StandardScaler()<br></code></pre></td></tr></table></figure>
+<p>调用 fit_transform(X) 将特征进行归一化缩放</p>
+<hr>
+<h1><span id="超参数选择">超参数选择</span></h1>
+<h2><span id="交叉验证">交叉验证</span></h2>
+<p>交叉验证是一种数据集的分割方法，将训练集划分为 n 份，其中一份做验证集、其他n-1份做训练集集</p>
+<p><img src="assets/image-20260104194725724.png" alt="image-20260104194725724"></p>
+<p><strong>交叉验证法原理</strong>：将数据集划分为 cv=10 份：</p>
+<p>1.第一次：把第一份数据做验证集，其他数据做训练</p>
+<p>2.第二次：把第二份数据做验证集，其他数据做训练</p>
+<p>3… 以此类推，总共训练10次，评估10次。</p>
+<p>4.使用训练集+验证集多次评估模型，取平均值做交叉验证为模型得分</p>
+<p>5.若k=5模型得分最好，再使用全部训练集(训练集+验证集) 对k=5模型再训练一边，再使用测试集对k=5模型做评估</p>
+<h2><span id="网格搜索法">网格搜索法</span></h2>
+<p>假设我们有两个超参数：</p>
+<ol>
+<li><code>n_neighbors</code> = [3, 5, 7, 9]</li>
+<li><code>weights</code> = [“uniform”, “distance”]</li>
+</ol>
+<p>我们就是在穷举<strong>所有组合</strong>，可以画成这样一个小表格：</p>
+<table>
+<thead>
+<tr>
+<th>n_neighbors</th>
+<th>weights</th>
+<th>组合编号</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td>uniform</td>
+<td>1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>distance</td>
+<td>2</td>
+</tr>
+<tr>
+<td>5</td>
+<td>uniform</td>
+<td>3</td>
+</tr>
+<tr>
+<td>5</td>
+<td>distance</td>
+<td>4</td>
+</tr>
+<tr>
+<td>7</td>
+<td>uniform</td>
+<td>5</td>
+</tr>
+<tr>
+<td>7</td>
+<td>distance</td>
+<td>6</td>
+</tr>
+<tr>
+<td>9</td>
+<td>uniform</td>
+<td>7</td>
+</tr>
+<tr>
+<td>9</td>
+<td>distance</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+<p>可以看出我们的网格搜索法就是将所有的存在的超参数组合进行训练</p>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>简单直观，易于理解和实现。</li>
+<li>能够系统地探索超参数空间。</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>当超参数空间较大时，计算成本非常高。</li>
+<li>可能无法找到全局最优解，尤其是在超参数空间不连续或存在多个局部最优解时。</li>
+</ul>
+<p>交叉验证网格搜索的API:</p>
+<p><img src="assets/image-20260104194858340.png" alt="image-20260104194858340"></p>
+<h2><span id="运用案例">运用案例</span></h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.datasets <span class="hljs-keyword">import</span> load_iris          <span class="hljs-comment"># 加载鸢尾花测试集的.</span><br><span class="hljs-keyword">from</span> sklearn.model_selection <span class="hljs-keyword">import</span> train_test_split, GridSearchCV    <span class="hljs-comment"># 分割训练集和测试集的, 网格搜索的</span><br><span class="hljs-keyword">from</span> sklearn.preprocessing <span class="hljs-keyword">import</span> StandardScaler        <span class="hljs-comment"># 数据标准化的</span><br><span class="hljs-keyword">from</span> sklearn.neighbors <span class="hljs-keyword">import</span> KNeighborsClassifier      <span class="hljs-comment"># KNN算法 分类对象</span><br><span class="hljs-keyword">from</span> sklearn.metrics <span class="hljs-keyword">import</span> accuracy_score              <span class="hljs-comment"># 模型评估的, 计算模型预测的准确率</span><br><br><br><span class="hljs-comment"># 1. 获取数据集.</span><br>iris_data = load_iris()<br><br><span class="hljs-comment"># 2. 数据基本处理-划分数据集.</span><br>x_train, x_test, y_train, y_test = train_test_split(iris_data.data, iris_data.target, test_size=<span class="hljs-number">0.2</span>, random_state=<span class="hljs-number">22</span>)<br><br><span class="hljs-comment"># 3. 数据集预处理-数据标准化.</span><br>transfer = StandardScaler()<br>x_train = transfer.fit_transform(x_train)<br>x_test = transfer.transform(x_test)<br><br><span class="hljs-comment"># 4. 模型训练.</span><br><span class="hljs-comment"># 4.1 创建估计器对象.</span><br>estimator = KNeighborsClassifier()<br><span class="hljs-comment"># 4.2 使用校验验证网格搜索.  指定参数范围.</span><br>param_grid = &#123;<span class="hljs-string">&quot;n_neighbors&quot;</span>: <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, <span class="hljs-number">10</span>)&#125;<br><span class="hljs-comment"># 4.3 具体的 网格搜索过程 + 交叉验证.</span><br><span class="hljs-comment"># 参1: 估计器对象, 参2: 参数范围, 参3: 交叉验证的折数.</span><br>estimator = GridSearchCV(estimator=estimator, param_grid=param_grid, cv=<span class="hljs-number">5</span>)<br><span class="hljs-comment"># 具体的模型训练过程.</span><br>estimator.fit(x_train, y_train)<br><br><br><span class="hljs-comment"># 4.4 交叉验证, 网格搜索结果查看.</span><br><span class="hljs-built_in">print</span>(estimator.best_score_)       <span class="hljs-comment"># 模型在交叉验证中, 所有参数组合中的最高平均测试得分</span><br><span class="hljs-built_in">print</span>(estimator.best_estimator_)   <span class="hljs-comment"># 最优的估计器对象.</span><br><span class="hljs-built_in">print</span>(estimator.cv_results_)       <span class="hljs-comment"># 模型在交叉验证中的结果.</span><br><span class="hljs-built_in">print</span>(estimator.best_params_)      <span class="hljs-comment"># 模型在交叉验证中的结果.</span><br><br><br><span class="hljs-comment"># 5. 得到最优模型后, 对模型重新预测.</span><br>estimator = KNeighborsClassifier(n_neighbors=<span class="hljs-number">6</span>)<br>estimator.fit(x_train, y_train)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;模型评估: <span class="hljs-subst">&#123;estimator.score(x_test, y_test)&#125;</span>&#x27;</span>)   <span class="hljs-comment"># 因为数据量和特征的问题, 该值可能小于上述的平均测试得分.</span><br></code></pre></td></tr></table></figure>
+<h1><span id="knn">KNN</span></h1>
+<h2><span id="knn算法定义">KNN算法定义：</span></h2>
+<p>K-近邻算法（K Nearest Neighbor，简称KNN）</p>
+<p>KNN算法思想：如果一个样本在特征空间中的 k 个最相似的样本中的大多数属于某一个类别，则该样本也属于这个类别</p>
+<p>(其实就是看你周围样本的特征参数进行选举或加权平均来判断你大概为什么标签)</p>
+<p><strong>样本相似性</strong>：样本都是属于一个任务数据集的。样本距离越近则越相似。</p>
+<h2><span id="api的介绍">API的介绍</span></h2>
+<p>KNN分类API：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">sklearn.neighbors.KNeighborsClassifier(n_neighbors=<span class="hljs-number">5</span>) <br></code></pre></td></tr></table></figure>
+<ul>
+<li>n_neighbors：int,可选（默认= 5），k_neighbors查询默认使用的邻居数</li>
+</ul>
+<p>KNN回归API:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">sklearn.neighbors.KNeighborsRegressor(n_neighbors=<span class="hljs-number">5</span>)<br></code></pre></td></tr></table></figure>
+<h2><span id="距离度量方法">距离度量方法</span></h2>
+<h3><span id="欧式距离">欧式距离</span></h3>
+<p>$$<br>
+\sqrt(x_i^2-x_y^2)<br>
+$$</p>
+<p><img src="assets/image-20260104162244244.png" alt="image-20260104162244244"></p>
+<h3><span id="曼哈顿距离">曼哈顿距离</span></h3>
+<p>为啥叫曼哈顿距离呢？其实他有个别名叫城市距离，纽约曼哈顿区城市街区比较方方正正。<br>
+$$<br>
+|x_i-y_i|<br>
+$$</p>
+<p><img src="assets/image-20260104162439098.png" alt="image-20260104162439098"></p>
+<h3><span id="切比雪夫距离">切比雪夫距离</span></h3>
+<p>曼哈顿距离的变种</p>
+<p><img src="assets/image-20260104163019077.png" alt="image-20260104163019077"></p>
+<h3><span id="闵氏距离">闵氏距离</span></h3>
+<p>对上面三种度量方法的一个结合</p>
+<p><img src="assets/image-20260104163047059.png" alt="image-20260104163047059"></p>
+<h2><span id="knn案例之手写数字识别">KNN案例之手写数字识别</span></h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><span class="hljs-keyword">from</span> sklearn.model_selection <span class="hljs-keyword">import</span> train_test_split<br><span class="hljs-keyword">from</span> sklearn.neighbors <span class="hljs-keyword">import</span> KNeighborsClassifier<br><span class="hljs-keyword">import</span> joblib<br><span class="hljs-keyword">from</span> collections <span class="hljs-keyword">import</span> Counter<br><br><br><span class="hljs-comment"># 1. 显示图片.</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">show_digit</span>(<span class="hljs-params">idx</span>):<br>    <span class="hljs-comment"># 1.1 加载数据.</span><br>    data = pd.read_csv(<span class="hljs-string">&#x27;手写数字识别.csv&#x27;</span>)<br>    <span class="hljs-comment"># 1.2非法值校验.</span><br>    <span class="hljs-keyword">if</span> idx &lt; <span class="hljs-number">0</span> <span class="hljs-keyword">or</span> idx &gt; <span class="hljs-built_in">len</span>(data) - <span class="hljs-number">1</span>:<br>        <span class="hljs-keyword">return</span><br>    <span class="hljs-comment"># 1.3 打印数据基本信息</span><br>    x = data.iloc[:, <span class="hljs-number">1</span>:]<br>    y = data.iloc[:, <span class="hljs-number">0</span>]<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;数据基本信息: <span class="hljs-subst">&#123;x.shape&#125;</span>)&#x27;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;类别数据比例: <span class="hljs-subst">&#123;Counter(y)&#125;</span>&#x27;</span>)<br><br>    <span class="hljs-comment"># 显示图片</span><br>    <span class="hljs-comment"># 1.4 将数据形状修改为: 28*28</span><br>    digit = x.iloc[idx].values.reshape(<span class="hljs-number">28</span>, <span class="hljs-number">28</span>)<br>    <span class="hljs-comment"># 1.5 关闭坐标轴标签</span><br>    plt.axis(<span class="hljs-string">&#x27;off&#x27;</span>)<br>    <span class="hljs-comment"># 1.6 显示图像</span><br>    plt.imshow(digit, cmap=<span class="hljs-string">&#x27;gray&#x27;</span>)  <span class="hljs-comment"># 灰色显示</span><br>    plt.show()<br><br><br><span class="hljs-comment"># 2. 训练模型.</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">train_model</span>():<br>    <span class="hljs-comment"># 1. 加载数据.</span><br>    data = pd.read_csv(<span class="hljs-string">&#x27;手写数字识别.csv&#x27;</span>)<br>    x = data.iloc[:, <span class="hljs-number">1</span>:]<br>    y = data.iloc[:, <span class="hljs-number">0</span>]<br><br>    <span class="hljs-comment"># 2.数据预处理, 归一化.</span><br>    x = x / <span class="hljs-number">255</span><br><br>    <span class="hljs-comment"># 3. 分割训练集和测试集.</span><br>    <span class="hljs-comment"># stratify: 按照y的类别比例进行分割</span><br>    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=<span class="hljs-number">0.2</span>, stratify=y, random_state=<span class="hljs-number">21</span>)<br><br>    <span class="hljs-comment"># 4. 训练模型</span><br>    estimator = KNeighborsClassifier(n_neighbors=<span class="hljs-number">3</span>)<br>    estimator.fit(x_train, y_train)<br><br>    <span class="hljs-comment"># 5. 模型评估</span><br>    my_score = estimator.score(x_test, y_test)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;测试集准确率为: <span class="hljs-subst">&#123;my_score:<span class="hljs-number">.2</span>f&#125;</span>&#x27;</span>)<br><br>    <span class="hljs-comment"># 6. 模型保存.</span><br>    joblib.dump(estimator, <span class="hljs-string">&#x27;model/knn.pth&#x27;</span>)<br><br><span class="hljs-comment"># 3. 测试模型.</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">use_model</span>():<br>    <span class="hljs-comment"># 1. 读取图片</span><br>    img = plt.imread(<span class="hljs-string">&#x27;data/demo.png&#x27;</span>)   <span class="hljs-comment"># 灰度图, 28*28像素</span><br>    plt.imshow(img, cmap=<span class="hljs-string">&#x27;gray&#x27;</span>)<br>    plt.show()<br><br>    <span class="hljs-comment"># 2. 加载模型.</span><br>    estimator = joblib.load(<span class="hljs-string">&#x27;model/knn.pth&#x27;</span>)<br><br>    <span class="hljs-comment"># 3. 预测图片.</span><br>    img = img.reshape(<span class="hljs-number">1</span>, -<span class="hljs-number">1</span>)  <span class="hljs-comment"># 形状从: (28, 28) =&gt; (1, 784)</span><br>    <span class="hljs-comment"># print(img.shape)</span><br>    y_test = estimator.predict(img)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;您绘制的数字是: <span class="hljs-subst">&#123;y_test&#125;</span>&#x27;</span>)<br><br><span class="hljs-comment"># 在main函数中测试</span><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    <span class="hljs-comment"># 1. 调用函数, 查看图片.</span><br>    <span class="hljs-comment"># show_digit(0)</span><br>    <span class="hljs-comment"># show_digit(10)</span><br>    <span class="hljs-comment"># show_digit(100)</span><br><br>    <span class="hljs-comment"># 2. 训练模型.</span><br>    <span class="hljs-comment"># train_model()</span><br><br>    <span class="hljs-comment"># 3. 测试模型</span><br>    use_model()<br></code></pre></td></tr></table></figure>
+<hr>
+<h1><span id="线性回归">线性回归</span></h1>
+<p>线性回归(Linear regression)是利用 <strong>回归方程(函数)</strong> 对 <strong>一个或多个自变量(特征值)和因变量(目标值)之间</strong> 关系进行建模的一种分析方式。</p>
+<p><img src="assets/image-20260104201013608.png" alt="image-20260104201013608"></p>
+<h2><span id="损失函数最优解mse为例子">损失函数最优解(MSE为例子)</span></h2>
+<p><img src="assets/image-20260104201841529.png" alt="image-20260104201841529"></p>
+<p>我们可以拟合无数条线性函数，所以我们需要一个标准来判断哪个线性函数是最好的</p>
+<p><strong>误差概念</strong>：用预测值y – 真实值y就是误差</p>
+<p><strong>损失函数</strong>：衡量每个样本预测值与真实值效果的函数</p>
+<p>红色直线能更好的拟合所有点”也就是误差最小，误差和最小</p>
+<h3><span id="一元线性方程解析解">一元线性方程解析解</span></h3>
+<p><img src="assets/image-20260104202415777.png" alt="image-20260104202415777"></p>
+<h3><span id="多元方程组解">多元方程组解</span></h3>
+<p><img src="assets/image-20260104202522095.png" alt="image-20260104202522095"></p>
+<h3><span id="梯度下降法">梯度下降法</span></h3>
+<h4><span id="定义">定义</span></h4>
+<p>• 求解函数极值还有更通用的方法就是梯度下降法。顾名思义:沿着梯度下降的方向求解极小值 • 举个例子:坡度最陡下山法</p>
+<p><img src="assets/image-20230901183007785.png" alt="image-20230901183007785"></p>
+<ul>
+<li>输入:初始化位置S;每步距离为a 。输出:从位置S到达山底</li>
+<li>步骤1:令初始化位置为山的任意位置S</li>
+<li>步骤2:在当前位置环顾四周，如果四周都比S高返回S;否则执行步骤3</li>
+<li>步骤3: 在当前位置环顾四周，寻找坡度最陡的方向，令其为x方向</li>
+<li>步骤4:沿着x方向往下走，长度为a，到达新的位置S‘</li>
+<li>步骤5:在S‘位置环顾四周，如果四周都比S‘高，则返回S‘。否则转到步骤3</li>
+</ul>
+<p>小结:通过循环迭代的方法不断更新位置S (相当于不断更新权重参数w)</p>
+<p><img src="assets/image-20230901183020726.png" alt="image-20230901183020726"></p>
+<p>最终找到最优解 这个方法可用来求损失函数最优解， 比正规方程更通用</p>
+<p><img src="assets/image-20230901183125661.png" alt="image-20230901183125661"></p>
+<p><img src="assets/image-20230912163031832.png" alt="image-20230912163031832"></p>
+<p><img src="assets/image-20230901183139728.png" alt="image-20230901183139728"></p>
+<p><img src="assets/image-20230901183152966.png" alt="image-20230901183152966"></p>
+<h4><span id="银行信贷案例">银行信贷案例</span></h4>
+<p><img src="assets/image-20230901183222050.png" alt="image-20230901183222050"></p>
+<p><img src="assets/image-20230901183240178.png" alt="image-20230901183240178"></p>
+<p><img src="assets/image-20230901183301618.png" alt="image-20230901183301618"></p>
+<p><img src="assets/image-20230901183315009.png" alt="image-20230901183315009"></p>
+<h4><span id="梯度下降算法分类">梯度下降算法分类</span></h4>
+<p><img src="assets/image-20230901183333299.png" alt="image-20230901183333299"></p>
+<p><img src="assets/image-20230901183346878.png" alt="image-20230901183346878"></p>
+<h4><span id="正规方程和梯度下降算法的对比">正规方程和梯度下降算法的对比</span></h4>
+<p><img src="assets/image-20230901162716376.png" alt="image-20230901162716376"></p>
+<h2><span id="回归评估方法">回归评估方法</span></h2>
+<h3><span id="平均绝对误差">平均绝对误差</span></h3>
+<p><strong>Mean Absolute Error (MAE)</strong><br>
+$$<br>
+MAE=\frac{1}{m}\sum_{i=1}^m|y_i-\hat{y}|<br>
+$$</p>
+<ul>
+<li>上面的公式中：n 为样本数量, y 为实际值, y_hat 为预测值</li>
+<li>MAE 越小模型预测约准确</li>
+</ul>
+<p>Sklearn 中MAE的API</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.metrics <span class="hljs-keyword">import</span> mean_absolute_error<br>mean_absolute_error(y_test,y_predict)<br></code></pre></td></tr></table></figure>
+<h3><span id="均方误差">均方误差</span></h3>
+<p><strong>Mean Squared Error (MSE)</strong><br>
+$$<br>
+MSE=\frac{1}{2m}\sum_{i=1}^m(y_i-\hat{y})^2<br>
+$$<br>
+Sklearn 中MSE的API</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.metrics <span class="hljs-keyword">import</span> mean_squared_error<br>mean_squared_error(y_test,y_predict)<br></code></pre></td></tr></table></figure>
+<h3><span id="均方根误差">均方根误差</span></h3>
+<p><strong>Root Mean Squared Error (RMSE)</strong><br>
+$$<br>
+RMSE=\sqrt{\frac{1}{m}\sum_{i=1}^m(y_i-\hat{y})^2}<br>
+$$</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>对大误差态度</th>
+<th>是否敏感异常值</th>
+<th>单位</th>
+<th>常见场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MAE</td>
+<td>温柔</td>
+<td>不敏感</td>
+<td>和 y 一样</td>
+<td>数据噪声大</td>
+</tr>
+<tr>
+<td>MSE</td>
+<td>很狠</td>
+<td>极敏感</td>
+<td>y²</td>
+<td>训练优化</td>
+</tr>
+<tr>
+<td>RMSE</td>
+<td>很狠</td>
+<td>极敏感</td>
+<td>和 y 一样</td>
+<td>评估模型</td>
+</tr>
+</tbody>
+</table>
+<h2><span id="线性回归房价预测案例">线性回归房价预测案例</span></h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 0.导包</span><br><span class="hljs-keyword">from</span> sklearn.datasets <span class="hljs-keyword">import</span> load_boston<br><span class="hljs-keyword">from</span> sklearn.model_selection <span class="hljs-keyword">import</span> train_test_split<br><span class="hljs-keyword">from</span> sklearn.preprocessing <span class="hljs-keyword">import</span> StandardScaler<br><span class="hljs-keyword">from</span> sklearn.linear_model <span class="hljs-keyword">import</span> LinearRegression,SGDRegressor<br><span class="hljs-keyword">from</span> sklearn.metrics <span class="hljs-keyword">import</span> mean_squared_error<br><br><span class="hljs-comment"># 1.加载数据</span><br>boston = load_boston()<br><span class="hljs-comment"># print(boston)</span><br><br><span class="hljs-comment"># 2.数据集划分</span><br>x_train,x_test,y_train,y_test =train_test_split(boston.data,boston.target,test_size=<span class="hljs-number">0.2</span>,random_state=<span class="hljs-number">22</span>)<br><br><span class="hljs-comment"># 3.标准化</span><br>process=StandardScaler()<br>x_train=process.fit_transform(x_train)<br>x_test=process.transform(x_test)<br><br><span class="hljs-comment"># 4.模型训练</span><br><span class="hljs-comment"># 4.1 实例化(正规方程)</span><br><span class="hljs-comment"># model =LinearRegression(fit_intercept=True)</span><br>model = SGDRegressor(learning_rate=<span class="hljs-string">&#x27;constant&#x27;</span>,eta0=<span class="hljs-number">0.01</span>)<br><span class="hljs-comment"># 4.2 fit</span><br>model.fit(x_train,y_train)<br><br><span class="hljs-comment"># print(model.coef_)</span><br><span class="hljs-comment"># print(model.intercept_)</span><br><span class="hljs-comment"># 5.预测</span><br>y_predict=model.predict(x_test)<br><br><span class="hljs-built_in">print</span>(y_predict)<br><br><span class="hljs-comment"># 6.模型评估</span><br><br><span class="hljs-built_in">print</span>(mean_squared_error(y_test,y_predict))<br></code></pre></td></tr></table></figure>
+<h1><span id="逻辑回归">逻辑回归</span></h1>
+<p>主要是应用于二分类问题</p>
+<h2><span id="数学模型">数学模型</span></h2>
+<h3><span id="sigmoid函数">sigmoid函数</span></h3>
+<p><img src="assets/image-20260105090907748.png" alt><br>
+$$<br>
+f(x)=\frac{1}{1+e^{wx+b}}\<br>
+f(x)’=f(x)(1-f(x))\<br>
+$$<br>
+数学性质:</p>
+<p>是单调递增函数，拐点为(0,0.5)</p>
+<h3><span id="极大似然估计">极大似然估计</span></h3>
+<p>核心思想：</p>
+<p>设模型中含有待估参数w，可以取很多值。已经知道了样本观测值，从w的一切可能值中选出一个使该观察值出现的概率为最大的值，作为w参数的估计值，这就是极大似然估计。（顾名思义：就是看上去那个是最大可能的意思）</p>
+<p>举个例子：</p>
+<p>假设有一枚不均匀的硬币，出现正面的概率和反面的概率是不同的。假定出现正面的概率为𝜃， 抛了6次得到如下现象 D = {正面，反面，反面，正面，正面，正面}。每次投掷事件都是相互独立的。 则根据产生的现象D，来估计参数𝜃是多少?</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs 𝜃">P(D|𝜃) = P &#123;正面，反面，反面，正面，正面，正面&#125;<br> = P(正面|𝜃) P(反面|𝜃) P(反面|𝜃) P(正面|𝜃) P(正面|𝜃) P(正面|𝜃)<br> =𝜃 *(1-𝜃)*(1-𝜃)𝜃*𝜃*𝜃 = 𝜃^4(1 − 𝜃)^2<br></code></pre></td></tr></table></figure>
+<p>问题转换为求极大值时𝜃是多少</p>
+<p><img src="assets/image-20260105091344262.png" alt="image-20260105091344262"></p>
+<h3><span id="逻辑回归原理">逻辑回归原理</span></h3>
+<p>逻辑回归概念 Logistic Regression</p>
+<p>• 一种分类模型，把线性回归的输出，作为逻辑回归的输入。</p>
+<p>• 输出是(0, 1)之间的值</p>
+<p>• 基本思想</p>
+<ol>
+<li>利用线性模型 f(x) = wx + b 根据特征的重要性计算出一个值</li>
+<li>再使用 sigmoid 函数将 f(x) 的输出值映射为概率值
+<ol>
+<li>设置阈值(eg:0.5)，输出概率值大于 0.5，则将未知样本输出为 1 类</li>
+<li>否则输出为 0 类</li>
+</ol>
+</li>
+</ol>
+<p>3.逻辑回归的假设函数<br>
+h(w) = sigmoid(wx + b )</p>
+<p>线性回归的输出，作为逻辑回归的输入</p>
+<p><img src="assets/image-20260105091700535.png" alt="image-20260105091700535"></p>
+<h2><span id="损失函数">损失函数</span></h2>
+<p>$$<br>
+Loss(L)=-\sum_{i=1}^m(y_ilog(p_i)+(1-y_i)log(1-p_i))<br>
+$$</p>
+<p><img src="assets/image-20230904151300483.png" alt="image-20230904151300483"></p>
+<p><img src="assets/image-20230904151334262.png" alt="image-20230904151334262"></p>
+<p><img src="assets/image-20230904151343779.png" alt="image-20230904151343779"></p>
+<h2><span id="逻辑回归电信客户流失预测案例">逻辑回归电信客户流失预测案例</span></h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><span class="hljs-keyword">import</span> seaborn <span class="hljs-keyword">as</span> sns<br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><span class="hljs-keyword">from</span> sklearn.model_selection <span class="hljs-keyword">import</span> train_test_split<br><span class="hljs-keyword">from</span> sklearn.linear_model <span class="hljs-keyword">import</span> LogisticRegression<br><span class="hljs-keyword">from</span> sklearn.metrics <span class="hljs-keyword">import</span> accuracy_score, roc_auc_score<br><br><br><span class="hljs-comment"># 1. 定义函数, 表示: 数据基本处理</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">dm01_数据基本处理</span>():<br>    <span class="hljs-comment"># 1. 读取数据, 查看数据的基本信息.</span><br>    churn_pd = pd.read_csv(<span class="hljs-string">&#x27;data/churn.csv&#x27;</span>)<br>    <span class="hljs-comment"># churn_pd.info()</span><br>    <span class="hljs-comment"># print(f&#x27;churn_pd.describe(): &#123;churn_pd.describe()&#125;&#x27;)</span><br>    <span class="hljs-comment"># print(f&#x27;churn_pd: &#123;churn_pd&#125;&#x27;)</span><br><br>    <span class="hljs-comment"># 2. 处理类别型的数据, 类别型数据做 one-hot编码(热编码).</span><br>    churn_pd = pd.get_dummies(churn_pd)<br>    churn_pd.info()<br>    <span class="hljs-comment"># print(f&#x27;churn_pd: &#123;churn_pd&#125;&#x27;)</span><br><br>    <span class="hljs-comment"># 3. 去除列 Churn_No, gender_Male</span><br>    churn_pd.drop([<span class="hljs-string">&#x27;Churn_No&#x27;</span>, <span class="hljs-string">&#x27;gender_Male&#x27;</span>], axis=<span class="hljs-number">1</span>, inplace=<span class="hljs-literal">True</span>)  <span class="hljs-comment"># 按列删除</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;churn_pd: <span class="hljs-subst">&#123;churn_pd&#125;</span>&#x27;</span>)<br><br>    <span class="hljs-comment"># 4. 列标签重命名, 打印列名</span><br>    churn_pd.rename(columns=&#123;<span class="hljs-string">&#x27;Churn_Yes&#x27;</span>: <span class="hljs-string">&#x27;flag&#x27;</span>&#125;, inplace=<span class="hljs-literal">True</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;列名: <span class="hljs-subst">&#123;churn_pd.columns&#125;</span>&#x27;</span>)<br><br>    <span class="hljs-comment"># 5. 查看标签的分布情况 0.26用户流失</span><br>    value_counts = churn_pd.flag.value_counts()<br>    <span class="hljs-built_in">print</span>(value_counts)<br><br><br><span class="hljs-comment"># 2. 定义函数, 表示: 特征筛选</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">dm02_特征筛选</span>():<br>    <span class="hljs-comment"># 1. 读取数据</span><br>    churn_pd = pd.read_csv(<span class="hljs-string">&#x27;data/churn.csv&#x27;</span>)<br>    <span class="hljs-comment"># 2. 处理类别型的数据, 类别型数据做 one-hot编码(热编码).</span><br>    churn_pd = pd.get_dummies(churn_pd)<br>    <span class="hljs-comment"># 3. 去除列 Churn_No, gender_Male</span><br>    churn_pd.drop([<span class="hljs-string">&#x27;Churn_No&#x27;</span>, <span class="hljs-string">&#x27;gender_Male&#x27;</span>], axis=<span class="hljs-number">1</span>, inplace=<span class="hljs-literal">True</span>)<br>    <span class="hljs-comment"># 4. 列标签重命名</span><br>    churn_pd.rename(columns=&#123;<span class="hljs-string">&#x27;Churn_Yes&#x27;</span>: <span class="hljs-string">&#x27;flag&#x27;</span>&#125;, inplace=<span class="hljs-literal">True</span>)<br>    <span class="hljs-comment"># 5. 查看标签的分布情况</span><br>    value_counts = churn_pd.flag.value_counts()<br>    <span class="hljs-built_in">print</span>(value_counts)<br>    <span class="hljs-comment"># 6. 查看Contract_Month 是否预签约流失情况</span><br>    sns.countplot(data=churn_pd, x=<span class="hljs-string">&#x27;Contract_Month&#x27;</span>, hue=<span class="hljs-string">&#x27;flag&#x27;</span>)<br>    plt.show()<br><br><br><span class="hljs-comment"># 3. 定义函数, 表示: 模型训练 和 评测</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">dm03_模型训练和评测</span>():<br>    <span class="hljs-comment"># 1. 读取数据</span><br>    churn_pd = pd.read_csv(<span class="hljs-string">&#x27;data/churn.csv&#x27;</span>)<br><br>    <span class="hljs-comment"># 2. 数据预处理</span><br>    <span class="hljs-comment"># 2.1 处理类别型的数据, 类别型数据做 one-hot编码(热编码).</span><br>    churn_pd = pd.get_dummies(churn_pd)<br>    <span class="hljs-comment"># 2.2 去除列 Churn_No, gender_Male</span><br>    churn_pd.drop([<span class="hljs-string">&#x27;Churn_No&#x27;</span>, <span class="hljs-string">&#x27;gender_Male&#x27;</span>], axis=<span class="hljs-number">1</span>, inplace=<span class="hljs-literal">True</span>)<br>    <span class="hljs-comment"># 2.3 列标签重命名</span><br>    churn_pd.rename(columns=&#123;<span class="hljs-string">&#x27;Churn_Yes&#x27;</span>: <span class="hljs-string">&#x27;flag&#x27;</span>&#125;, inplace=<span class="hljs-literal">True</span>)<br><br>    <span class="hljs-comment"># 3. 特征处理.</span><br>    <span class="hljs-comment"># 3.1 提取特征和标签</span><br>    x = churn_pd[[<span class="hljs-string">&#x27;Contract_Month&#x27;</span>, <span class="hljs-string">&#x27;internet_other&#x27;</span>, <span class="hljs-string">&#x27;PaymentElectronic&#x27;</span>]]<br>    y = churn_pd[<span class="hljs-string">&#x27;flag&#x27;</span>]<br>    <span class="hljs-comment"># 3.2 训练集和测试集的分割</span><br>    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=<span class="hljs-number">0.3</span>, random_state=<span class="hljs-number">21</span>)<br><br>    <span class="hljs-comment"># 4. 模型训练.</span><br>    estimator = LogisticRegression()<br>    estimator.fit(x_train, y_train)<br><br>    <span class="hljs-comment"># 5. 模型预测</span><br>    y_predict = estimator.predict(x_test)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;预测结果: <span class="hljs-subst">&#123;y_predict&#125;</span>&#x27;</span>)<br><br>    <span class="hljs-comment"># 6. 模型评估</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;准确率: <span class="hljs-subst">&#123;accuracy_score(y_test, y_predict)&#125;</span>&#x27;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;准确率: <span class="hljs-subst">&#123;estimator.score(x_test, y_test)&#125;</span>&#x27;</span>)<br><br>    <span class="hljs-comment"># 计算AUC值.</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;AUC值: <span class="hljs-subst">&#123;roc_auc_score(y_test, y_predict)&#125;</span>&#x27;</span>)<br><br><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    <span class="hljs-comment"># dm01_数据基本处理()</span><br>    <span class="hljs-comment"># dm02_特征筛选()</span><br>    dm03_模型训练和评测()<br></code></pre></td></tr></table></figure>
+</div><div class="article-licensing box"><div class="licensing-title"><p>机器学习笔记</p><p><a href="https://garybyd.github.io/posts/机器学习笔记/">https://garybyd.github.io/posts/机器学习笔记/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Gary Byd</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2026-01-04</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2026-01-06</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="CC-BY-NC" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></div><div class="sharethis-inline-share-buttons"></div><script src="https://platform-api.sharethis.com/js/sharethis.js#property=你的ID" defer></script></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/posts/Mysql%E6%A0%B8%E5%BF%83%E6%A1%86%E6%9E%B6%E7%9F%A5%E8%AF%86/"><span class="level-item">Mysql核心框架</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="/images/avatar.png" alt="Gary"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Gary</p><p class="is-size-6 is-block">保持一份热爱，奔赴下一场火海</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>China,JiangXi</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives/"><p class="title">9</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories/"><p class="title">6</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags/"><p class="title">4</p></a></div></div></nav><div class="level is-mobile is-multiline"><a class="level-item button is-transparent is-marginless" target="_blank" rel="me noopener" title="GitHub" href="https://github.com/GaryByd"><i class="fab fa-github"></i></a></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Hexo%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">Hexo教程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/mysql%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">mysql教程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/redis%E6%95%99%E7%A8%8B/"><span class="level-start"><span class="level-item">redis教程</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/redis%E7%9A%84%E5%BA%94%E7%94%A8/"><span class="level-start"><span class="level-item">redis的应用</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/redis%E7%9A%84%E9%97%AE%E9%A2%98%E6%96%B9%E6%A1%88/"><span class="level-start"><span class="level-item">redis的问题方案</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/redis%E7%AC%94%E8%AE%B0/"><span class="level-start"><span class="level-item">redis笔记</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2026/01/"><span class="level-start"><span class="level-item">一月 2026</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/08/"><span class="level-start"><span class="level-item">八月 2025</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/05/"><span class="level-start"><span class="level-item">五月 2025</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2025/03/"><span class="level-start"><span class="level-item">三月 2025</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li></ul></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/mysql/"><span class="tag">mysql</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/redis/"><span class="tag">redis</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"><span class="tag">机器学习</span><span class="tag">1</span></a></div></div></div></div></div><!--!--><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2026-01-04T07:58:14.000Z">2026-01-04</time></p><p class="title"><a href="/posts/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">机器学习笔记</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-08-18T13:53:33.000Z">2025-08-18</time></p><p class="title"><a href="/posts/Mysql%E6%A0%B8%E5%BF%83%E6%A1%86%E6%9E%B6%E7%9F%A5%E8%AF%86/">Mysql核心框架</a></p><p class="categories"><a href="/categories/mysql%E6%95%99%E7%A8%8B/">mysql教程</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-05-18T05:01:07.000Z">2025-05-18</time></p><p class="title"><a href="/posts/redis%E6%8C%81%E4%B9%85%E5%8C%96/">redis持久化和数据淘汰方案</a></p><p class="categories"><a href="/categories/redis%E7%9A%84%E9%97%AE%E9%A2%98%E6%96%B9%E6%A1%88/">redis的问题方案</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-05-18T03:11:31.000Z">2025-05-18</time></p><p class="title"><a href="/posts/redis%E8%AF%BB%E5%86%99%E4%B8%80%E8%87%B4%E9%97%AE%E9%A2%98/">redis读写一致问题</a></p><p class="categories"><a href="/categories/redis%E7%9A%84%E9%97%AE%E9%A2%98%E6%96%B9%E6%A1%88/">redis的问题方案</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2025-05-15T13:41:05.000Z">2025-05-15</time></p><p class="title"><a href="/posts/%E4%BD%BF%E7%94%A8lua%E4%BC%98%E5%8C%96%E4%B8%80%E4%BA%BA%E4%B8%80%E5%8D%95%E9%97%AE%E9%A2%98/">使用lua优化一人一单问题</a></p><p class="categories"><a href="/categories/redis%E7%9A%84%E5%BA%94%E7%94%A8/">redis的应用</a></p></div></article></div></div><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">链接</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://github.com/GaryByd/Crawler_instances" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">爬虫实例</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li><li><a class="level is-mobile" href="https://github.com/GaryByd/RSM_WeChat_Version" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">RSM微信版</span></span><span class="level-right"><span class="level-item tag">github.com</span></span></a></li></ul></div></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/images/logo.svg" alt="GaryHome" height="28"></a><p class="is-size-7"><span>&copy; 2026 Gary Byd</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p><p class="is-size-7">© 2023-2025 GaryByd</p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="CC协议" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
